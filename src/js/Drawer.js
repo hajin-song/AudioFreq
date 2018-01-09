@@ -1,12 +1,8 @@
 function setCircles(){
- this.innerCircle.style.width = this.container.clientWidth * 0.3 + "px";
- this.innerCircle.style.height = this.container.clientWidth * 0.3 + "px";
- this.outerCircle.style.width = this.container.clientWidth * 0.5 + "px";
- this.outerCircle.style.height = this.container.clientWidth * 0.5 + "px";
 
  return {
-  inner: this.innerCircle.clientWidth,
-  outer: this.outerCircle.clientWidth
+  inner:  this.container.clientWidth * 0.3,
+  outer:  this.container.clientWidth * 0.5
  };
 }
 

@@ -44,7 +44,9 @@ function draw(curR) {
  });
  var delta = (curR - radius);
  if(delta > 1.5){
-  delta = 1.5;
+  delta = 1.5 + ((Math.random() * (0.25 - (-0.25)) + (-0.25)).toFixed(4));
+ }else if (Math.abs(delta) < 0.1) {
+  delta = ((Math.random() * (0.25 - (-0.25)) + (-0.25)).toFixed(4));
  }
  //console.log(delta);
  drawer.update(delta);
