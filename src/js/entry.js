@@ -1,7 +1,8 @@
+import Drawer from './Drawer';
+
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
+var drawer = new Drawer('circleInner', 'circleOuter', 'main');
 var context = new AudioContext();
-var canvas = document.getElementById('oscilloscope');
-var canvasCtx = canvas.getContext('2d');
 var analyser = context.createAnalyser();
 function playSound(buffer){
  let source = context.createBufferSource();
@@ -10,8 +11,10 @@ function playSound(buffer){
   source.connect(context.destination);
   source.connect(analyser);
   analyser.fftSize = 1024;
-  draw();
+  drawer.initialise();
+  draw(0);
   source.start(0);
+
  });
 }
 
@@ -28,40 +31,28 @@ function loadSound(url){
  });
 }
 
-function draw() {
+function draw(curR) {
  var bufferLength = analyser.frequencyBinCount;
  var dataArray = new Uint8Array(bufferLength);
-  analyser.getByteTimeDomainData(dataArray);
-  //console.log(bufferLength, dataArray);
-  drawVisual = requestAnimationFrame(draw);
-  //console.log('begin');
-  canvasCtx.fillStyle = 'rgb(200, 200, 200)';
-  canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+ analyser.getByteTimeDomainData(dataArray);
 
-  canvasCtx.lineWidth = 1;
-  canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
+ var radius = dataArray.reduce( (acc, cur) => {
+  return acc + cur;
+ }, 0) / bufferLength;
+ requestAnimationFrame(function(){
+  draw(radius);
+ });
+ var delta = (curR - radius);
+ if(delta > 1.5){
+  delta = 1.5 + ((Math.random() * (0.25 - (-0.25)) + (-0.25)).toFixed(4));
+ }else if (Math.abs(delta) < 0.1) {
+  delta = ((Math.random() * (0.25 - (-0.25)) + (-0.25)).toFixed(4));
+ }
+ //console.log(delta);
+ drawer.update(delta);
 
-  canvasCtx.beginPath();
 
-  var sliceWidth = canvas.width * 5.0 / bufferLength;
-  var x = 0;
-  //console.log(sliceWidth, bufferLength, dataArray.length);
-  for (var i = 0; i < bufferLength; i++) {
-    var v = dataArray[i] / 128.0;
 
-    var y = v * canvas.height / 2;
-
-    if (i === 0) {
-      canvasCtx.moveTo(x, y);
-    } else {
-      canvasCtx.lineTo(x, y);
-    }
-
-    x += sliceWidth;
-  }
-
-  canvasCtx.lineTo(canvas.width, canvas.height / 2);
-  canvasCtx.stroke();
 };
 
 loadSound('assets/audio/ausAnthem.mp3');
