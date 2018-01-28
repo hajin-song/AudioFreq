@@ -1,7 +1,7 @@
 import Drawer from './Drawer';
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
-var drawer = new Drawer('circleInner', 'circleOuter', 'main');
+var drawer = new Drawer('circleInner', 'circleInnerBuffer', 'circleOuter', 'circleOuterBuffer', 'main');
 var context = new AudioContext();
 var analyser = context.createAnalyser();
 function playSound(buffer){
