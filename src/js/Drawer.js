@@ -1,43 +1,45 @@
-function setCircles(){
-
- return {
-  inner:  this.container.clientWidth * 0.3,
-  outer:  this.container.clientWidth * 0.5
- };
-}
-
-function updateCircles(delta){
- console.log(delta);
- this.innerCircle.style.width = (this.dimension.inner * delta) + "px";
- this.innerCircle.style.height = (this.dimension.inner * delta) + "px";
- this.innerBuffer.style.width = (this.dimension.inner * delta - 20) + "px";
- this.innerBuffer.style.height = (this.dimension.inner * delta - 20) + "px";
- this.outerCircle.style.width = (this.dimension.outer * delta) + "px";
- this.outerCircle.style.height = (this.dimension.outer * delta) + "px";
- this.outerBuffer.style.width = (this.dimension.outer * delta - 20) + "px";
- this.outerBuffer.style.height = (this.dimension.outer * delta - 20) + "px";
-}
-
 class Drawer {
- constructor(innerCircleID, innerBufferID, outerCircleID, outerBufferID, containerID) {
-  this.container = document.getElementById(containerID);
-  this.innerCircle = document.getElementById(innerCircleID);
-  this.outerCircle = document.getElementById(outerCircleID);
-  this.innerBuffer = document.getElementById(innerBufferID);
-  this.outerBuffer = document.getElementById(outerBufferID);
- }
+    constructor(canvasID) {
+        this.canvas = document.getElementById(canvasID);
+        this.canvasCtx = this.canvas.getContext('2d');
+        this.resizeCanvas();
+        window.addEventListener('resize', this.resizeCanvas.bind(this), false);
 
- initialise(){
-  this.dimension = setCircles.call(this);
-  window.addEventListener('resize', () => {
-   this.dimension = setCircles.call(this);
-  });
- }
+    }
 
- update(delta){
-  updateCircles.call(this, delta);
+    draw(dataArray, analyser, bufferLength){
+        analyser.getByteTimeDomainData(dataArray);
+        var drawVisual = requestAnimationFrame(() => this.draw(dataArray, analyser, bufferLength));
+        this.canvasCtx.clearRect(0, 0, this.width, this.height);
+        analyser.getByteTimeDomainData(dataArray);
+        this.canvasCtx.lineWidth = 10;
+        this.canvasCtx.strokeStyle = 'rgb(100, 100, 100)';
+        this.canvasCtx.beginPath();
 
- }
+        let sliceWidth = this.width * 1.0 / bufferLength;
+        let x = 0;
+        let prevY = this.height;
+        for(let i = 0 ; i < bufferLength ; i++){
+            let v = dataArray[i] / 128.0;
+            let y = v * this.height/2;
+           
+            if(Math.abs(prevY - y) > 10){
+                i === 0 ? this.canvasCtx.moveTo(x, y) : this.canvasCtx.quadraticCurveTo(x, y, x - 0.5, (prevY + y) / 2);
+                prevY = y;
+            }
+
+            
+            x += sliceWidth;
+        }
+        this.canvasCtx.stroke();
+    }
+
+    resizeCanvas(){
+        this.canvas.height = this.canvas.parentElement.clientHeight;
+        this.canvas.width = this.canvas.parentElement.clientWidth;
+        this.height = this.canvas.height;
+        this.width = this.canvas.width;
+    }
 }
 
 

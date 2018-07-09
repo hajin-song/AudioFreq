@@ -1,7 +1,7 @@
 import Drawer from './Drawer';
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
-var drawer = new Drawer('circleInner', 'circleInnerBuffer', 'circleOuter', 'circleOuterBuffer', 'main');
+var drawer = new Drawer('drawer');
 var context = new AudioContext();
 var analyser = context.createAnalyser();
 function playSound(buffer){
@@ -11,10 +11,8 @@ function playSound(buffer){
   source.connect(context.destination);
   source.connect(analyser);
   analyser.fftSize = 1024;
-  drawer.initialise();
-  draw(0);
   source.start(0);
-
+  draw();
  });
 }
 
@@ -31,28 +29,13 @@ function loadSound(url){
  });
 }
 
-function draw(curR) {
- var bufferLength = analyser.frequencyBinCount;
- var dataArray = new Uint8Array(bufferLength);
- analyser.getByteTimeDomainData(dataArray);
-
- var radius = dataArray.reduce( (acc, cur) => {
-  return acc + cur;
- }, 0) / bufferLength;
- requestAnimationFrame(function(){
-  draw(radius);
- });
- var delta = (curR - radius);
- if(delta > 1.5){
-  delta = 1.5 + ((Math.random() * (0.25 - (-0.25)) + (-0.25)).toFixed(4));
- }else if (Math.abs(delta) < 0.1) {
-  delta = ((Math.random() * (0.25 - (-0.25)) + (-0.25)).toFixed(4));
- }
- //console.log(delta);
- drawer.update(delta);
+function draw() {
+    var bufferLength = analyser.frequencyBinCount/16;
+    var dataArray = new Uint8Array(bufferLength);
+    drawer.draw(dataArray, analyser, bufferLength);
 
 
 
 };
 
-loadSound('assets/audio/ausAnthem.mp3');
+loadSound('assets/audio/summer.mp3');
