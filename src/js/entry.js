@@ -30,7 +30,7 @@ function loadSound(url){
 }
 
 function draw() {
-    var bufferLength = analyser.frequencyBinCount/16;
+    var bufferLength = analyser.frequencyBinCount;
     var dataArray = new Uint8Array(bufferLength);
     drawer.draw(dataArray, analyser, bufferLength);
 
