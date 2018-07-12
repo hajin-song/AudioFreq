@@ -16,12 +16,9 @@ class Drawer {
 
         this.drawCircle(this.center.x, this.center.y, 'rgb(100, 100, 100)')
  
-        let sliceWidth = bufferLength / this.circumference;
-        let x = 0;
-        let prevX = 0;
-        let prevY = this.radius
-        let xCount = 1;
-        console.log(bufferLength/4, bufferLength/2, bufferLength * 3 / 4, 'z');
+        const sliceWidth = this.radius/((bufferLength+1)/4);
+        let xCount = this.radius;
+
         for(let i = 0 ; i < bufferLength ; i++){
             let v = dataArray[i] / 128.0;
             let y = v + this.radius;
@@ -31,29 +28,30 @@ class Drawer {
                 //this.canvasCtx.moveTo(this.center.x, this.radius);
             }else if(i < parseInt(bufferLength/4)){
                 let strokeStyle = `rgb(${i}, 100, 100)`;
-                this.drawCircle(this.center.x + xCount + sliceWidth, this.center.y - y, strokeStyle);
+                this.drawCircle(this.center.x + xCount, this.center.y - y + xCount, strokeStyle);
                 //this.canvasCtx.lineTo(this.center.x + xCircle, this.center.y + y);
             }else if(i >= parseInt(bufferLength/4) && i < parseInt((2*bufferLength)/4)){
                 let strokeStyle = `rgb(0, 0, ${i + 100})`;
-                this.drawCircle(this.center.x + xCount + sliceWidth, this.center.y + y, strokeStyle);
+                this.drawCircle(this.center.x + xCount, this.center.y + y - xCount, strokeStyle);
                 //this.canvasCtx.lineTo(this.center.x + xCircle, this.center.y - y);
             }else if(i >= parseInt((2*bufferLength)/4) && i < parseInt((3*bufferLength)/4)){
                 let strokeStyle = `rgb(0, 255, 0)`;
-                this.drawCircle(this.center.x - xCount - sliceWidth, this.center.y + y, strokeStyle);
+                this.drawCircle(this.center.x - xCount, this.center.y + y - xCount, strokeStyle);
                 //this.canvasCtx.lineTo(xCircle - this.center.x, this.center.y - y);
             }else if(i >= parseInt((3*bufferLength)/4)){
                 let strokeStyle = `rgb(${i + 100}, 0, 0)`;
-                this.drawCircle(this.center.x - xCount - sliceWidth, this.center.y - y, strokeStyle);
+                this.drawCircle(this.center.x - xCount, this.center.y - y + xCount, strokeStyle);
                 //this.canvasCtx.lineTo(xCircle - this.center.x, this.center.y + y);
             }else {
                 let strokeStyle = `rgb(123, 123, 0)`;
                 this.drawCircle(100, 100, strokeStyle);
             }
-            if((++xCount > this.radius)){
-                xCount = 0;
+            xCount-= sliceWidth;
+            if(i===parseInt(bufferLength/4) || 
+                i===parseInt(bufferLength/2) || 
+                i === parseInt(3*bufferLength/4)){
+                xCount = this.radius;
             }
-            
-            x += sliceWidth;
         }
         this.canvasCtx.stroke();
     }
