@@ -21,7 +21,7 @@ class Drawer {
 
         for(let i = 0 ; i < bufferLength ; i++){
             let v = dataArray[i] / 128.0;
-            let y = v + this.radius;
+            let y = dataArray[i] + this.radius/2;
             //console.log(xCircle, y);
             
             if(i === 0){
@@ -47,8 +47,7 @@ class Drawer {
                 this.drawCircle(100, 100, strokeStyle);
             }
             xCount-= sliceWidth;
-            if(i===parseInt(bufferLength/4) || 
-                i===parseInt(bufferLength/2) || 
+            if(i === parseInt(bufferLength/4) || i === parseInt(bufferLength/2) || 
                 i === parseInt(3*bufferLength/4)){
                 xCount = this.radius;
             }
@@ -64,7 +63,6 @@ class Drawer {
         this.center = { 'x': this.width/2, 'y': this.height/2 };
         this.radius = this.height < this.width ? this.height/4 : this.width/4;
         this.circumference = 2 * Math.PI * this.radius;
-        console.log(this.height, this.width, this.center, this.radius)
     }
 
     drawCircle(x, y, strokeStyle){
