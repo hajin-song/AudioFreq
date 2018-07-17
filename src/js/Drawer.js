@@ -7,9 +7,9 @@ class Drawer {
 
     }
 
-    draw(dataArray, analyser, bufferLength){
+    draw(dataArray, analyser, bufferLength, context){
         analyser.getByteTimeDomainData(dataArray);
-        var drawVisual = requestAnimationFrame(() => this.draw(dataArray, analyser, bufferLength));
+        requestAnimationFrame(() => this.draw(dataArray, analyser, bufferLength, context));
         this.canvasCtx.clearRect(0, 0, this.width, this.height);
         analyser.getByteTimeDomainData(dataArray);
         this.canvasCtx.lineWidth = 10;
@@ -19,38 +19,20 @@ class Drawer {
         const sliceWidth = this.radius/((bufferLength+1)/4);
         let xCount = this.radius;
 
+        let time = context.currentTime;
+        let angleStep = 360 / bufferLength;
+        let curAngle = 0;
         for(let i = 0 ; i < bufferLength ; i++){
-            let v = dataArray[i] / 128.0;
-            let y = dataArray[i] + this.radius/2;
+            let offSet = dataArray[i];
             //console.log(xCircle, y);
-            
-            if(i === 0){
-                //this.canvasCtx.moveTo(this.center.x, this.radius);
-            }else if(i < parseInt(bufferLength/4)){
-                let strokeStyle = `rgb(${i}, 100, 100)`;
-                this.drawCircle(this.center.x + xCount, this.center.y - y + xCount, strokeStyle);
-                //this.canvasCtx.lineTo(this.center.x + xCircle, this.center.y + y);
-            }else if(i >= parseInt(bufferLength/4) && i < parseInt((2*bufferLength)/4)){
-                let strokeStyle = `rgb(0, 0, ${i + 100})`;
-                this.drawCircle(this.center.x + xCount, this.center.y + y - xCount, strokeStyle);
-                //this.canvasCtx.lineTo(this.center.x + xCircle, this.center.y - y);
-            }else if(i >= parseInt((2*bufferLength)/4) && i < parseInt((3*bufferLength)/4)){
-                let strokeStyle = `rgb(0, 255, 0)`;
-                this.drawCircle(this.center.x - xCount, this.center.y + y - xCount, strokeStyle);
-                //this.canvasCtx.lineTo(xCircle - this.center.x, this.center.y - y);
-            }else if(i >= parseInt((3*bufferLength)/4)){
-                let strokeStyle = `rgb(${i + 100}, 0, 0)`;
-                this.drawCircle(this.center.x - xCount, this.center.y - y + xCount, strokeStyle);
-                //this.canvasCtx.lineTo(xCircle - this.center.x, this.center.y + y);
-            }else {
-                let strokeStyle = `rgb(123, 123, 0)`;
-                this.drawCircle(100, 100, strokeStyle);
-            }
-            xCount-= sliceWidth;
-            if(i === parseInt(bufferLength/4) || i === parseInt(bufferLength/2) || 
-                i === parseInt(3*bufferLength/4)){
-                xCount = this.radius;
-            }
+            let direction = this.__calculateOffsetDirection(i, bufferLength);
+            let x, y
+            let coord = this.__calculateXY(curAngle);
+            x = coord.x + (offSet/2 * direction.x);
+            y = coord.y + (offSet/2 * direction.y);
+            curAngle += angleStep;
+            let strokeStyle = `rgb(${i}, 100, 100)`;
+            this.drawCircle(x, y, strokeStyle);
         }
         this.canvasCtx.stroke();
     }
@@ -70,6 +52,22 @@ class Drawer {
         this.canvasCtx.beginPath();
         this.canvasCtx.arc(x, y, 5, 0, 2 * Math.PI);
         this.canvasCtx.stroke();
+    }
+
+    __calculateXY(angle){
+        return { x: this.center.x + this.radius * Math.cos(angle), y: this.center.y + this.radius * Math.sin(angle) };
+    }
+
+    __calculateOffsetDirection(i, bufferLength){
+        if(i < parseInt(bufferLength/4)){
+            return { x: 1, y : 1};
+        }else if(i >= parseInt(bufferLength/4) && i < parseInt((2*bufferLength)/4)){
+            return { x: 1, y: -1};
+        }else if(i >= parseInt((2*bufferLength)/4) && i < parseInt((3*bufferLength)/4)){
+            return { x: -1, y: -1};
+        }else {
+            return { x: -1, y: 1};
+        }
     }
 }
 
