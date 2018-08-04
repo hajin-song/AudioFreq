@@ -18,19 +18,19 @@ class Drawer {
  
         const sliceWidth = this.radius/((bufferLength+1)/4);
         let xCount = this.radius;
-
+        let prevOffset = 0;
         let time = context.currentTime;
-        let angleStep = 360 / bufferLength;
-        let curAngle = 0;
         for(let i = 0 ; i < bufferLength ; i++){
+            let target = (i + time * 100) % bufferLength;
+            let curAngle = (target / (bufferLength/2)) * Math.PI;
             let offSet = dataArray[i];
-            //console.log(xCircle, y);
+            if(Math.abs(prevOffset - offSet) < 0.3){
+                prevOffset = offSet;
+            }
             let direction = this.__calculateOffsetDirection(i, bufferLength);
-            let x, y
-            let coord = this.__calculateXY(curAngle);
-            x = coord.x + (offSet/2 * direction.x);
-            y = coord.y + (offSet/2 * direction.y);
-            curAngle += angleStep;
+            let coord = this.__calculateXY(curAngle, direction, prevOffset);
+        
+            let {x, y} = coord;
             let strokeStyle = `rgb(${i}, 100, 100)`;
             this.drawCircle(x, y, strokeStyle);
         }
@@ -54,8 +54,12 @@ class Drawer {
         this.canvasCtx.stroke();
     }
 
-    __calculateXY(angle){
-        return { x: this.center.x + this.radius * Math.cos(angle), y: this.center.y + this.radius * Math.sin(angle) };
+    __calculateXY(angle, direction, offset){
+        let result = { 
+            x: this.radius * Math.cos(angle) + this.width/2 + offset/2,
+            y: this.radius * Math.sin(angle) + this.width/2 + offset/2
+        };
+        return result;
     }
 
     __calculateOffsetDirection(i, bufferLength){
