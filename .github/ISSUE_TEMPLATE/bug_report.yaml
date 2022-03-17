@@ -1,62 +1,67 @@
-name: Bug Report
-description: File a bug report
-title: "[Bug]: "
-labels: ["bug", "triage"]
-assignees:
-  - octocat
+name: Foo
+description: Requesting Foo
+title: "[Foo Request]: "
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for taking the time to fill out this bug report!
   - type: input
-    id: contact
+    id: foo
     attributes:
-      label: Contact Details
-      description: How can we get in touch with you if we need more info?
-      placeholder: ex. email@example.com
+      label: Foo for Fizz
+      description: Foo Bar.
+      placeholder: e.g. foo,bar
     validations:
-      required: false
-  - type: textarea
-    id: what-happened
+      required: true
+  - type: input
+    id: fizz
     attributes:
-      label: What happened?
-      description: Also tell us, what did you expect to happen?
-      placeholder: Tell us what you see!
-      value: "A bug happened!"
+      label: Fizz for Bazz
+      description: Fizz Bazz.
+      placeholder: e.g. Fizz, Bazz
+    validations:
+      required: true
+  - type: input
+    id: Bar
+    attributes:
+      label: Bar Foo
+      description: Bar Foo
+      placeholder: e.g. bar, foo
     validations:
       required: true
   - type: dropdown
-    id: version
+    id: fooz
     attributes:
-      label: Version
-      description: What version of our software are you running?
+      label: Fooz
+      description: Fooz?
       options:
-        - 1.0.2 (Default)
-        - 1.0.3 (Edge)
+        - Fizz
+        - Bazz
+        - Bar
+        - Foo
     validations:
       required: true
   - type: dropdown
-    id: browsers
+    id: Bazz
     attributes:
-      label: What browsers are you seeing the problem on?
-      multiple: true
+      label: Bazz
+      description: Bazz
       options:
-        - Firefox
-        - Chrome
-        - Safari
-        - Microsoft Edge
+        - Bazz
+        - Bar
+        - Foo
+        - Fizz
+    validations:
+      required: true
+  - type: dropdown
+    id: BuzzBazz
+    attributes:
+      label: FooBar
+      options:
+        - Buzz
+        - Bazz
   - type: textarea
-    id: logs
+    id: Foooz
     attributes:
-      label: Relevant log output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
-      render: yaml
-  - type: checkboxes
-    id: terms
-    attributes:
-      label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
-      options:
-        - label: I agree to follow this project's Code of Conduct
-          required: true
+      label: FizzBozz
+      description: BozzFazz
+      placeholder: Fizz Bazz Fozz
+    validations:
+      required: true
