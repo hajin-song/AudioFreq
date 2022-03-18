@@ -5,6 +5,7 @@ on:
 
 jobs:
   fizz-fooz:
+    if: ${{ github.event.label.name == 'bug' }}
     name: Foo Faz
     runs-on: ubuntu-latest
     steps:
