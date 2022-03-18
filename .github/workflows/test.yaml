@@ -1,0 +1,12 @@
+name: Fizz Bazz
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  fizz-fooz:
+    name: Foo Faz
+    runs-on: ubuntu-latest
+    steps:
+      - name: Foo
+        run: echo Foo
