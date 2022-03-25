@@ -13,4 +13,4 @@ jobs:
       - name: Foo
         run: echo Foo
       - name: Get issues
-        run: echo ${{ github.event.issue }}
+        run: echo ${{ github.event.issue.body }}
