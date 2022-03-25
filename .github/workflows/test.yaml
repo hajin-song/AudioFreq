@@ -11,3 +11,5 @@ jobs:
     steps:
       - name: Foo
         run: echo Foo
+      - name: Get issues
+        run: echo ${{ github.event.issue }}
