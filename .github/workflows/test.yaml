@@ -1,7 +1,8 @@
 name: Fizz Bazz
 on:
   issues:
-    types: [opened]
+    types:
+      - labeled
 
 jobs:
   fizz-fooz:
